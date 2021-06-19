@@ -23,5 +23,31 @@ namespace SuperviseService.Controllers
             var services = ServiceService.GetAll();
             return services;
         }
+
+        [HttpGet("{id}")]
+        public ActionResult<Service> Get(int id)
+        {
+            var s = ServiceService.Get(id);
+
+            if (s == null)
+                return NotFound();
+
+            return s;
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult Update(int id, Service Service)
+        {
+            if (id != Service.Id)
+                return BadRequest();
+
+            var existingService = ServiceService.Get(id);
+            if (existingService is null)
+                return NotFound();
+
+            ServiceService.Update(Service);
+
+            return NoContent();
+        }
     }
 }
