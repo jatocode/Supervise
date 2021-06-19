@@ -8,11 +8,11 @@ namespace SuperviseService.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class SuperviceController : ControllerBase
+    public class SuperviseController : ControllerBase
     {
-        private readonly ILogger<SuperviceController> _logger;
+        private readonly ILogger<SuperviseController> _logger;
 
-        public SuperviceController(ILogger<SuperviceController> logger)
+        public SuperviseController(ILogger<SuperviseController> logger)
         {
             _logger = logger;
         }
@@ -20,7 +20,8 @@ namespace SuperviseService.Controllers
         [HttpGet]
         public IEnumerable<Service> Get()
         {
-            return new List<Service>();
+            var services = ServiceService.GetAll();
+            return services;
         }
     }
 }
