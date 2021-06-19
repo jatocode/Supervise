@@ -51,6 +51,9 @@ namespace SuperviseService
             {
                 endpoints.MapControllers();
             });
+
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
         }
     }
 }
