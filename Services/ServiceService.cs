@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.ServiceProcess;
+using System.Threading;
 
 public static class ServiceService
 {
@@ -9,8 +11,8 @@ public static class ServiceService
     {
         Services = new List<Service>
             {
-                new Service { Id = 1, Name = "LackService", Status = StatusEnum.RUNNING },
-                new Service { Id = 2, Name = "Multiflöde", Status = StatusEnum.RUNNING }
+                new Service { Id = 1, Name = "LackService", ServiceName="Prevas MES Printing Service", Status = StatusEnum.RUNNING },
+                new Service { Id = 2, Name = "Multiflöde", ServiceName="Prevas.PLS_Multiflow", Status = StatusEnum.RUNNING }
             };
     }
 
@@ -39,6 +41,40 @@ public static class ServiceService
         if (index == -1)
             return;
 
-        Services[index] = Service;
+        //Services[index] = Service;
+
+        var existingService = Get(Service.Id);
+
+        RestartService(existingService.ServiceName);
+    }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>")]
+    public static void RestartService(string serviceName)
+    {
+        /* Använder:
+       https://docs.microsoft.com/en-us/dotnet/api/system.serviceprocess.servicecontroller?redirectedfrom=MSDN&view=dotnet-plat-ext-5.0
+       */
+
+        ServiceController sc = new ServiceController(serviceName);
+
+        if (sc.Status == ServiceControllerStatus.Stopped)
+        {
+            sc.Start();
+            while (sc.Status == ServiceControllerStatus.Stopped)
+            {
+                Thread.Sleep(1000);
+                sc.Refresh();
+            }
+        }
+
+        if (sc.Status == ServiceControllerStatus.Running)
+        {
+            sc.Stop();
+            while (sc.Status == ServiceControllerStatus.Running)
+            {
+                Thread.Sleep(1000);
+                sc.Refresh();
+            }
+        }
     }
 }
