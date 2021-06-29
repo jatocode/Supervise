@@ -31,6 +31,15 @@ namespace SuperviseService
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SuperviseService", Version = "v1" });
             });
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder.SetIsOriginAllowed(b => true)
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials()
+                        );
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -42,6 +51,7 @@ namespace SuperviseService
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SuperviseService v1"));
             }
+            app.UseCors("CorsPolicy");
 
             app.UseRouting();
 
@@ -54,6 +64,8 @@ namespace SuperviseService
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
+
+
         }
     }
 }

@@ -45,7 +45,14 @@ namespace SuperviseService.Controllers
             if (existingService is null)
                 return NotFound();
 
-            ServiceService.Update(Service);
+            try
+            {
+                ServiceService.Update(Service);
+            } catch (Exception e)
+            {
+                //Console.Writ('Unable to stop' + e.Message);
+                return Forbid();
+            }
 
             return NoContent();
         }
